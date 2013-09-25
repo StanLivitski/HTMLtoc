@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+ |  This file is part of HTMLtoc.
+ |  Copyright © 2013 Konstantin Livitski
+ |
+ |  HTMLtoc is free software: you can redistribute it and/or modify
+ |  it under the terms of the GNU Affero General Public License as published by
+ |  the Free Software Foundation, either version 3 of the License, or
+ |  (at your option) any later version.
+ |
+ |  This program is distributed in the hope that it will be useful,
+ |  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ |  GNU Affero General Public License for more details.
+ |
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<project name="HTMLtoc" default="jar">
+	<property name="source.dir" location="${basedir}/src" />
+	<property name="build.dir.rel" value="build" />
+	<property name="build.dir" location="${basedir}/${build.dir.rel}" />
+	<property name="dest.jar.rel" value="html-toc.jar" />
+	<property name="dest.jar.path" location="${basedir}/${dest.jar.rel}" />
+	<property name="javadoc.dir.rel" value="javadoc" />
+	<property name="javadoc.dir" location="${basedir}/${javadoc.dir.rel}" />
+	<property name="lib.dir" location="${basedir}/lib" />
+
+	<path id="libs.bundle">
+		<fileset dir="${lib.dir}" includes="*.jar" />
+	</path>
+
+    <target name="jar" depends="compile" description="Builds JAR file for the project">
+    	<jar destfile="${dest.jar.path}" basedir="${build.dir}" update="false" duplicate="fail" />
+    </target>
+
+    <target name="compile" description="Compiles the project's classes">
+    	<delete dir="${build.dir}" quiet="true" />
+    	<mkdir dir="${build.dir}" />
+    	<javac destdir="${build.dir}" classpathref="libs.bundle"
+    		debug="true" debuglevel="lines,source" source="6" target="6">
+    		<src path="${source.dir}" />
+    	</javac>
+    	<copy todir="${build.dir}" preservelastmodified="true">
+			<fileset dir="${basedir}">
+				<include name="LICENSE" />
+				<include name="NOTICE" />
+			</fileset>
+    	</copy>
+    </target>
+
+    <target name="javadoc" description="Generates Javadoc from the project's sources">
+    	<delete dir="${javadoc.dir}" quiet="true" />
+    	<mkdir dir="${javadoc.dir}" />
+        <javadoc access="protected" author="true" classpathref="libs.bundle"
+        	destdir="${javadoc.dir}" doctitle="${ant.project.name} project"
+        	nodeprecated="false" nodeprecatedlist="false"
+        	noindex="false" nonavbar="false" notree="false"
+        	packagenames="name.livitski.tools.html.toc"
+        	source="6" sourcepath="${source.dir}" splitindex="true" use="true" version="true">
+            <link href="http://docs.oracle.com/javase/6/docs/api/" />
+        	<link href="../../StAXform/javadoc" />
+        </javadoc>
+    </target>
+</project>
